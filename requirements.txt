@@ -1,0 +1,40 @@
+# Core data science
+pandas==2.2.2
+numpy==1.26.4
+scipy==1.13.1
+scikit-learn==1.4.2
+
+# Optional: true PAM (K-Medoids) implementation. clustering.PAMClustering
+# transparently falls back to a built-in numpy PAM if this is not installed
+# (it can be difficult to build from source on some Windows toolchains).
+# scikit-learn-extra==0.3.0
+
+# Predictive modeling
+xgboost==2.0.3
+
+# Visualization
+matplotlib==3.8.4
+seaborn==0.13.2
+plotly==5.22.0
+
+# Dashboard
+streamlit==1.35.0
+
+# API
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.4
+
+# Model explainability
+shap==0.45.1
+
+# Reporting / export
+reportlab==4.2.2
+openpyxl==3.1.2
+
+# Config
+pyyaml==6.0.1
+
+# Testing
+pytest==8.2.2
+pytest-cov==5.0.0

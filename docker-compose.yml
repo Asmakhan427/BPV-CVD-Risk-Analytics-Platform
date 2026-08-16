@@ -1,0 +1,27 @@
+services:
+  dashboard:
+    build: .
+    image: bpv-cvd-dashboard:latest
+    container_name: bpv-cvd-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  api:
+    build: .
+    image: bpv-cvd-dashboard:latest
+    container_name: bpv-cvd-api
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
