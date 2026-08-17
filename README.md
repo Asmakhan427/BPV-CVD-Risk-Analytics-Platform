@@ -1,163 +1,99 @@
 # BPV-CVD Risk Analytics Platform
 
-**Interactive Machine Learning Dashboard for Blood Pressure Variability Analysis and Cardiovascular Risk Prediction in Hemodialysis Patients**
+**Machine learning platform for blood pressure variability (BPV) clustering and cardiovascular risk prediction in hemodialysis patients**, reproducing the analytical approach of Montoya et al. (2025) on a synthetic cohort.
 
-A complete, production-ready computational reproduction of the analytical approach described in:
+[![Python](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![scikit-learn](https://img.shields.io/badge/ML-scikit--learn-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
+[![Docker](https://img.shields.io/badge/container-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Tests](https://img.shields.io/badge/tests-48%20passing-brightgreen)](tests/)
+[![License](https://img.shields.io/badge/license-MIT-green)](#license)
 
-> Montoya et al. (2025). *Blood pressure variability and cardiovascular risk assessment using machine learning clustering after arteriovenous fistula creation in hemodialysis patients.*
 
-This project includes a full Python analytics package, an 8-page interactive Streamlit dashboard, a FastAPI service, SQLite persistence, PDF reporting, Docker packaging, and a pytest test suite.
+---
 
-> **Data disclaimer:** All patient data in this project is **synthetically generated** (`bpv_cvd/data_generator.py`) to statistically match the cluster sizes and cardiovascular event rates reported in the paper. No real patient data is used or required. This platform is a methodological/educational demonstration, **not a clinical decision-making tool**.
+## Output
+
+Overview 
+<img width="1919" height="865" alt="image" src="https://github.com/user-attachments/assets/834f141a-df61-4c9a-bf73-32ce03c8b8fe" />
+Clustering
+ <img width="1915" height="813" alt="image" src="https://github.com/user-attachments/assets/5cfb92e2-3860-47c8-8b2f-46e22a7acaa7" />
+
+
+Cardiovascular Risk  
+ <img width="1919" height="791" alt="image" src="https://github.com/user-attachments/assets/73570dbc-0546-4825-b120-b76fde0238d8" />
+Patient Explorer
+ <img width="1919" height="825" alt="image" src="https://github.com/user-attachments/assets/eeba8506-6552-4947-8dc9-a3c996fe0e66" />
+ 
 
 ---
 
 ## Features
 
-- **Dynamic dashboard** — sidebar controls (patient count, random seed) regenerate the cohort and rerun the full pipeline live; every page reflects the new data immediately
-- **4 clustering algorithms** — K-Means, PAM (K-Medoids), Ward's hierarchical clustering, EM (Gaussian Mixture Model) — with a shared `fit / predict / evaluate / get_metrics` interface
-- **3 predictive models** — Random Forest, XGBoost, Logistic Regression — for cardiovascular risk classification
-- **8-page interactive dashboard** — Home, Data Explorer, Clustering Analysis, Cardiovascular Risk, Patient Explorer, Clinical Insights, Model Performance, Reports
-- **30+ visualizations** — histograms, box/violin plots, correlation heatmaps, pairplots, 2D/3D scatter, dendrogram, silhouette plots, PCA/t-SNE, parallel coordinates, ROC/PR curves, confusion matrices, feature importance, SHAP, radar charts, gauge charts, and more
-- **FastAPI backend** with auto-generated Swagger docs (`/docs`)
-- **SQLite persistence** for patients, longitudinal BP measurements, cluster assignments, and predictions
-- **PDF report generator** (ReportLab) with a configurable section builder
-- **Docker & docker-compose** for one-command deployment
-- **pytest** unit/integration test suite covering every backend module
-
----
-
-## Project Structure
-
-```
-BPV-CVD Risk Analytics Platform/
-├── bpv_cvd/                     # Core analytics package
-│   ├── data_generator.py        # Synthetic cohort generation (n=83, matches paper stats)
-│   ├── preprocessing.py         # Scaling, imputation, feature engineering, splitting
-│   ├── clustering.py            # K-Means, PAM, Ward, EM implementations
-│   ├── analysis.py               # ANOVA, CV risk tables, demographics, bootstrap CI
-│   ├── prediction.py            # Random Forest / XGBoost / Logistic Regression models
-│   ├── visualization.py         # Publication-quality static figures (matplotlib/seaborn)
-│   ├── dashboard_data.py        # Cached data-shaping layer used by the dashboard/API
-│   ├── database.py              # SQLite persistence layer
-│   ├── report.py                # PDF report generation (ReportLab)
-│   └── palette.py               # Shared colorblind-safe color tokens
-├── app.py                       # Streamlit entry point (Home page)
-├── pages/                       # Streamlit multipage app (auto-discovered)
-│   ├── 1_Data_Explorer.py
-│   ├── 2_Clustering_Analysis.py
-│   ├── 3_Cardiovascular_Risk.py
-│   ├── 4_Patient_Explorer.py
-│   ├── 5_Clinical_Insights.py
-│   ├── 6_Model_Performance.py
-│   └── 7_Reports.py
-├── dash_common.py                # Shared dashboard helpers (caching, stat cards, badges)
-├── api/main.py                   # FastAPI service
-├── tests/                        # pytest unit & integration tests
-├── run_analysis.py               # Backend-only pipeline runner (saves figures + DB)
-├── run_pipeline.py               # Full pipeline runner (+ optional PDF report)
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-└── setup.py
-```
-
----
+- **Dynamic dashboard** — sidebar controls (patient count, random seed) regenerate the cohort and rerun the full pipeline live
+- **4 clustering algorithms** — K-Means, PAM, Ward's hierarchical clustering, EM (Gaussian Mixture) via a shared `fit / predict / evaluate` interface
+- **3 predictive models** — Random Forest, XGBoost, Logistic Regression for cardiovascular risk classification
+- **8-page dashboard** — Home, Data Explorer, Clustering Analysis, Cardiovascular Risk, Patient Explorer, Clinical Insights, Model Performance, Reports
+- **30+ visualizations** — histograms, box/violin plots, correlation heatmaps, 2D/3D scatter, dendrogram, silhouette plots, PCA/t-SNE, ROC/PR curves, SHAP, radar and gauge charts
+- **FastAPI service** with auto-generated Swagger docs
+- **SQLite persistence**, **PDF report generator**, **Docker** packaging, **pytest** suite
 
 ## Quick Start
 
-### Local development
-
 ```bash
-# Create & activate a virtual environment
 python -m venv venv
 venv\Scripts\activate          # Windows
 source venv/bin/activate       # macOS/Linux
 
-# Install dependencies
 pip install -r requirements.txt
-
-# Run the backend analysis pipeline (generates figures + SQLite DB)
-python run_analysis.py
-
-# Launch the dashboard
-streamlit run app.py
+streamlit run app.py           # dashboard at http://localhost:8501
 ```
 
-The dashboard opens at **http://localhost:8501**.
-
-### Run the FastAPI service
+Other entry points:
 
 ```bash
-uvicorn api.main:app --reload --port 8000
+python run_analysis.py                       # backend-only: figures + SQLite DB
+python run_pipeline.py --generate-report      # full pipeline + PDF report
+uvicorn api.main:app --reload --port 8000     # API, docs at /docs
+pytest                                        # test suite
+docker-compose up                             # dashboard + API in containers
 ```
 
-Swagger docs at **http://localhost:8000/docs**.
+## Project Structure
 
-### Full pipeline with PDF report
+<details>
+<summary>Expand</summary>
 
-```bash
-python run_pipeline.py --generate-report
+```
+bpv_cvd/               Core analytics package (data generation, preprocessing,
+                        clustering, statistics, prediction, visualization,
+                        SQLite persistence, PDF reporting)
+app.py                 Streamlit entry point
+pages/                 Streamlit multipage dashboard (7 pages)
+dash_common.py         Shared dashboard helpers (cohort controls, caching, UI)
+api/main.py            FastAPI service
+tests/                 pytest unit & integration tests
+run_analysis.py         Backend-only pipeline runner
+run_pipeline.py         Full pipeline runner (+ optional PDF report)
+Dockerfile / docker-compose.yml
 ```
 
-### Docker
-
-```bash
-docker build -t bpv-dashboard .
-docker run -p 8501:8501 bpv-dashboard
-
-# or, for both dashboard + API:
-docker-compose up
-```
-
-### Run tests
-
-```bash
-pytest
-pytest --cov=bpv_cvd --cov-report=term-missing
-```
-
----
-
-## Dashboard Pages
-
-Every page shares a sidebar **Cohort settings** panel (patient count, random seed). Changing either control regenerates the cohort and reruns clustering + prediction; all pages update immediately with the new results.
-
-| Page | Contents |
-|---|---|
-| **Home** | Key statistics, cluster distribution, CV risk overview |
-| **Data Explorer** | Raw data table, summary stats, interactive correlation heatmap, pairplot, distributions |
-| **Clustering Analysis** | Algorithm selector, 2D/3D scatter, metrics comparison, parallel coordinates, PCA/t-SNE, dendrogram, silhouette plots |
-| **Cardiovascular Risk** | Risk by cluster, ANOVA, interactive risk predictor with gauge chart, ROC/confusion matrix |
-| **Patient Explorer** | Individual patient profile, BP trajectory, cluster standing, treatment recommendation |
-| **Clinical Insights** | Cluster-by-cluster clinical interpretation and management recommendations |
-| **Model Performance** | Full model comparison, ROC/PR curves, learning curves, cross-validation, SHAP |
-| **Reports** | Custom PDF report builder + CSV/Excel/JSON data export |
-
----
+</details>
 
 ## Clinical Interpretation Summary
 
 | Cluster | BPV Range | CV Risk | Recommendation |
 |---|---|---|---|
-| **High BPV** | SBPV > 13%, DBPV > 6% | **42.9%** | Aggressive BP monitoring, frequent follow-up, consider antihypertensive adjustment and cardiac evaluation |
+| **High BPV** | SBPV > 13%, DBPV > 6% | **42.9%** | Aggressive BP monitoring, frequent follow-up, antihypertensive adjustment, cardiac evaluation |
 | **Medium BPV** | SBPV 8–13%, DBPV 4–6% | **16.7%** | Standard monitoring, lifestyle modification, quarterly review |
 | **Low BPV** | SBPV < 8%, DBPV < 4% | **12.0%** | Routine care, annual review |
 
----
-
 ## Methodology Notes
 
-- **Clustering**: features are standardized (`StandardScaler`) before clustering on `[SBPV, DBPV, mean SBP, mean DBP, pulse pressure]`. Ward's hierarchical clustering is used as the canonical/primary cluster assignment throughout the dashboard, reflecting the best-performing algorithm reported in the source paper. Cluster labels are ordered by mean BPV composite into `Low / Medium / High BPV` for clinical interpretability.
-- **Validation metrics**: silhouette score, Davies-Bouldin index, Calinski-Harabasz score.
-- **Prediction**: models are trained on a stratified 75/25 train/test split with class-balanced weighting; evaluated via accuracy, precision, recall, F1, and ROC-AUC.
-- **PAM**: uses `scikit-learn-extra`'s `KMedoids` if installed, otherwise falls back to a built-in numpy PAM implementation — no hard dependency on a package that can be difficult to build on some Windows toolchains.
-
-## Citation
-
-If referencing the underlying methodology, cite the original paper:
-
-> Montoya, et al. (2025). *Blood pressure variability and cardiovascular risk assessment using machine learning clustering after arteriovenous fistula creation in hemodialysis patients.*
+- Clustering runs on standardized `[SBPV, DBPV, mean SBP, mean DBP, pulse pressure]`; Ward's hierarchical clustering is the canonical assignment (best-performing algorithm in the source paper), labeled `Low / Medium / High BPV` by mean BPV composite.
+- Validation metrics: silhouette score, Davies-Bouldin index, Calinski-Harabasz score.
+- Prediction models trained on a stratified 75/25 split, evaluated via accuracy, precision, recall, F1, and ROC-AUC.
 
 ## License
 
